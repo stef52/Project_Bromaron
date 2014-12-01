@@ -90,6 +90,8 @@ namespace DirectXGame2
 			XMVECTOR ori;
 			bool isFiring;
 			int type;
+			int draw = 0;
+			int count = 0;
 		};
 
 		Laser laser;

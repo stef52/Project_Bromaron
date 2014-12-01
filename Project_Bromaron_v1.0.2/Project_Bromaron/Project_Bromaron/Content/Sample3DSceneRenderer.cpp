@@ -122,6 +122,7 @@ bool Sample3DSceneRenderer::collisionDetectionAA(XMVECTOR objectOne, XMVECTOR ob
 	}
 	return false;
 }
+
 //ship to asteroid
 bool Sample3DSceneRenderer::collisionDetectionShipA(XMVECTOR objectOne, XMVECTOR objectTwo){
 

@@ -382,24 +382,34 @@ void Sample3DSceneRenderer::Render()
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			DrawOne(context, &thexform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
+			laser.draw = 1;
 		}
 		else if (laser.type == 1)
 		{
 			thexform = XMMatrixMultiply(laserXform, cameraXform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
-		}
-		else if (laser.type == 2){
-			thexform = XMMatrixMultiply(laserXform, cameraXform);
-			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
-			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
+			laser.draw = 1;
 		}
 		else 
 		{
-			thexform = XMMatrixMultiply(laserXform, cameraXform);
-			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
+			if (laser.count < 7){
+				thexform = XMMatrixMultiply(laserXform, cameraXform);
+				thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
+				laser.count++;
+				laser.draw = 1;
+			}
+			else if (laser.count > 30)
+			{
+				laser.count = 0;
+			}
+			else{
+				laser.count++;
+			}
 		}
-		DrawOne(context, &thexform);
+		if (laser.draw == 1){
+			DrawOne(context, &thexform);
+		}
 		laser.isFiring = false;
 	}
 
