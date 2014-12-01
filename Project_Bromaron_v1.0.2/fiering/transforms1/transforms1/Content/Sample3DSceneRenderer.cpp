@@ -375,7 +375,7 @@ void Sample3DSceneRenderer::Render()
 
 	//fire laser 
 	if (laser.isFiring){
-		if (laser.type == 0){
+		if (laser.type == 0){// This does the weaker laser shot
 			//hierarchical xform from camera
 			thexform = XMMatrixMultiply(laserXform, cameraXform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
@@ -384,14 +384,14 @@ void Sample3DSceneRenderer::Render()
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
 			laser.draw = 1;
 		}
-		else if (laser.type == 1)
+		else if (laser.type == 1)//TODO possibly sphere shot?
 		{
 			thexform = XMMatrixMultiply(laserXform, cameraXform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			laser.draw = 1;
 		}
-		else 
+		else //This does the Stronger single shot
 		{
 			if (laser.count < 7){
 				thexform = XMMatrixMultiply(laserXform, cameraXform);
