@@ -7,50 +7,50 @@
     <SolutionConfiguration>Debug|Win32</SolutionConfiguration>
     <PackageArchitecture>x86</PackageArchitecture>
     <PackageIdentityName>c404f662-9f5b-42eb-ae80-cf608ccc6681</PackageIdentityName>
-    <IntermediateOutputPath>C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Debug\</IntermediateOutputPath>
+    <IntermediateOutputPath>C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Debug\</IntermediateOutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <AppXManifest Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\AppxManifest.xml">
+    <AppXManifest Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\Project_Bromaron.exe">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\Project_Bromaron.exe">
       <PackagePath>Project_Bromaron.exe</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\Project_Bromaron.winmd">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\Project_Bromaron.winmd">
       <PackagePath>Project_Bromaron.winmd</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\Logo.png">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\Logo.png">
       <PackagePath>Assets\Logo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\SmallLogo.png">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\SmallLogo.png">
       <PackagePath>Assets\SmallLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\StoreLogo.png">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\StoreLogo.png">
       <PackagePath>Assets\StoreLogo.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\SplashScreen.png">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\SplashScreen.png">
       <PackagePath>Assets\SplashScreen.png</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\becky.wma">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\becky.wma">
       <PackagePath>Assets\becky.wma</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\chord.wav">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Project_Bromaron\Assets\chord.wav">
       <PackagePath>Assets\chord.wav</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\SamplePixelShader.cso">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\SamplePixelShader.cso">
       <PackagePath>SamplePixelShader.cso</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\SampleVertexShader.cso">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\SampleVertexShader.cso">
       <PackagePath>SampleVertexShader.cso</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\STEVEN\Dropbox\Academia\COMP3501\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\resources.pri">
+    <AppxPackagedFile Include="C:\Users\STEVEN\Desktop\Project_Bromaron\Project_Bromaron_v1.0.2\Project_Bromaron\Debug\Project_Bromaron\resources.pri">
       <PackagePath>resources.pri</PackagePath>
     </AppxPackagedFile>
   </ItemGroup>
