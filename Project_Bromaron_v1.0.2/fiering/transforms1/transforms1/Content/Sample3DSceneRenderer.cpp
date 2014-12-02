@@ -792,4 +792,5 @@ void Sample3DSceneRenderer::ReleaseDeviceDependentResources()
     m_constantBuffer.Reset();
     m_vertexBuffer.Reset();
     m_indexBuffer.Reset();
+	m_particleVB.Reset();
 }
