@@ -59,7 +59,7 @@ float4 main(PixelShaderInput input) : SV_TARGET
 
 	float amb = 1.0;
 
-	float c = 0.7*diffuse + 0.9*spec + 0.1*amb;
+	float c = 0.7*diffuse + 0.9*spec + 0.9*amb;
 	c = saturate(c);
 	// use texture color instead of per-vertex color:
 	//cr = float3(input.color.x, input.color.y, input.color.z);				

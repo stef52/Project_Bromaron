@@ -235,6 +235,11 @@
     <Media Include="Assets\chord.wav" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Content\geo_quad.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">GS</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="Content\SamplePixelShader.hlsl">
       <ShaderType>Pixel</ShaderType>
       <ShaderModel>4.0_level_9_1</ShaderModel>
