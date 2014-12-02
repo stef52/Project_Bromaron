@@ -183,6 +183,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Image Include="Assets\2365.dds" />
+    <Image Include="Assets\face.dds" />
     <Image Include="Assets\Logo.png" />
     <Image Include="Assets\SmallLogo.png" />
     <Image Include="Assets\StoreLogo.png" />

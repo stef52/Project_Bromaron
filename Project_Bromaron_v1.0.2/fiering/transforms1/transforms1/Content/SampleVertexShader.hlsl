@@ -11,6 +11,8 @@ cbuffer ModelViewProjectionConstantBuffer : register(b0)
     matrix model;
     matrix view;
     matrix projection;
+	float4 lightpos;
+	float4 eyepos;
 };
 
 // Per-vertex data used as input to the vertex shader.
@@ -35,17 +37,24 @@ struct PixelShaderInput
 // Simple shader to do vertex processing on the GPU.
 PixelShaderInput main(VertexShaderInput input)
 {
-    PixelShaderInput output;
-    float4 pos = float4(input.pos, 1.0f);
+	PixelShaderInput output;
+	float4 pos = float4(input.pos, 1.0f);
+		float4 norm = float4(input.normal, 0.0f);
+		// Transform the vertex position into projected space.
+		pos = mul(pos, model);
+	output.surfpos = pos;
 
-    // Transform the vertex position into projected space.
-    pos = mul(pos, model);
-    pos = mul(pos, view);
-    pos = mul(pos, projection);
-    output.pos = pos;
+	pos = mul(pos, view);
+	pos = mul(pos, projection);
+	output.pos = pos;
 
-    // Pass the color through without modification.
-    output.color = input.color;
+	// transform the surface normal -- model xform only
+	output.normal = mul(norm, model);
 
-    return output;
+	// Pass the color through without modification.
+	output.color = input.color;
+	// pass through texture coordinates:
+	output.texcoord = input.texcoord;
+
+	return output;
 }

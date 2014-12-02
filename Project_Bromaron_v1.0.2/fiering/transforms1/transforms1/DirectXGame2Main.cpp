@@ -263,7 +263,7 @@ bool DirectXGame2Main::Render()
     context->OMSetRenderTargets(1, targets, m_deviceResources->GetDepthStencilView());
 
     // Clear the back buffer and depth stencil view.
-    context->ClearRenderTargetView(m_deviceResources->GetBackBufferRenderTargetView(), DirectX::Colors::DarkSlateGray);
+    context->ClearRenderTargetView(m_deviceResources->GetBackBufferRenderTargetView(), DirectX::Colors::Black);
     context->ClearDepthStencilView(m_deviceResources->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     // Render the scene objects.

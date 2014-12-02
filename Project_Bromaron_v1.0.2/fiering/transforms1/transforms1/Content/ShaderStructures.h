@@ -15,6 +15,8 @@ namespace DirectXGame2
         DirectX::XMFLOAT4X4 model;
         DirectX::XMFLOAT4X4 view;
         DirectX::XMFLOAT4X4 projection;
+		DirectX::XMFLOAT4 lightpos;
+		DirectX::XMFLOAT4 eyepos;
     };
 
     // Assert that the constant buffer remains 16-byte aligned.

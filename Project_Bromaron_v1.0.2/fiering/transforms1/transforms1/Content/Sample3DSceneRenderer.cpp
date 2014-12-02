@@ -133,11 +133,16 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
         );
 
 	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, -0.1f, -58.0f, 1.0f };
+	static const XMVECTORF32 eye = { 0.7f, 0.7f, 1.5f, 1.0f };
 	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 1.0f };
 	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+	static XMVECTORF32 light = { 2.0f, 2.0f, 2.0f, 1.0f };
+	static XMVECTORF32 eyee = { 0.0f, 0.7f, 1.5f, 1.0f };
+
 
 	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	XMStoreFloat4(&m_constantBufferData.lightpos, light);
+	XMStoreFloat4(&m_constantBufferData.eyepos, eyee);
 	//XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixV);
 
 
@@ -589,14 +594,14 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
         // Load mesh vertices. Each vertex has a position and a color.
         static const VertexPositionColor cubeVertices[] = 
         {
-            {XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f)},
-            {XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f)},
-            {XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f)},
-            {XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f)},
-            {XMFLOAT3( 0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f)},
-            {XMFLOAT3( 0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f)},
-            {XMFLOAT3( 0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f)},
-            {XMFLOAT3( 0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f)},
+			{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(-0.5f, 0.5f, -0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(-0.5f, 0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.5f, 0.5f, -0.5f), XMFLOAT2(0.0f, 1.0f) },
+			{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
         };
 
         D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
@@ -654,7 +659,34 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
             );
     });
 
+	auto context = m_deviceResources->GetD3DDeviceContext();
 
+	ID3D11Resource *pp;
+	ID3D11ShaderResourceView *textureView;
+
+	CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), context,
+		L"Assets/face.dds",
+		&pp,
+		&textureView,
+		0);
+
+	// Create the sampler state
+	ID3D11SamplerState*                 mySampler = NULL;
+
+	D3D11_SAMPLER_DESC sampDesc;
+	ZeroMemory(&sampDesc, sizeof(sampDesc));
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	sampDesc.MinLOD = 0;
+	sampDesc.MaxLOD = 2 * D3D11_FLOAT32_MAX;
+	m_deviceResources->GetD3DDevice()->CreateSamplerState(&sampDesc, &mySampler);
+
+	// add the texture and sampler to the pixel shader:
+	context->PSSetShaderResources(0, 1, &textureView);
+	context->PSSetSamplers(0, 1, &mySampler);
 
     // Once the cube is loaded, the object is ready to be rendered.
     createCubeTask.then([this] () {
