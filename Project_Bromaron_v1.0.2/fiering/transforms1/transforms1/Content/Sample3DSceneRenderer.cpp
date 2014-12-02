@@ -171,10 +171,71 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
         Rotate(radians);
     }
 
+
 	m_timer = timer.GetFramesPerSecond() / 60.;
+
+	for (int i = 0; i < numast; i++)
+	{ // draw every asteroid
+		if (debris[i].boolDraw==false){
+			continue;
+		}
+		if (collisionDetection(cam.pos, debris[i].pos)){
+				debris[i].hitCounter = 3;//TODO testing only
+			}
+			if (collisionDetectionRay(debris[i].pos, laser.ori)){
+		//if (intersectRaySphere(cam.pos, laser.ori, debris[i].pos, 100.0)>0){
+				debris[i].hitCounter = 3;//TODO testing only
+			}
+
+			if (isDestroyedAsstroid(debris[i].hitCounter)){
+				debris[i].boolDraw = false;
+			}
+		
+	}
+
 	UpdateWorld();
 	UpdatePlayer();
 }
+
+bool Sample3DSceneRenderer::collisionDetectionRay(XMVECTOR sphere, XMVECTOR ray){
+	XMVECTOR diff = XMVectorSubtract(sphere, ray);
+
+	return false;
+}
+
+bool Sample3DSceneRenderer::isDestroyedAsstroid(int hitcount){
+	if (hitcount > 2){
+		return true;
+	}
+	return false;
+}
+
+bool Sample3DSceneRenderer::collisionDetection(XMVECTOR objectOne, XMVECTOR objectTwo){
+
+	XMVECTOR diff = XMVectorSubtract(objectOne, objectTwo);
+	XMVECTOR length = XMVectorSqrt(XMVector3Dot(diff, diff));
+
+	if (XMVectorGetX(length) < 0.6f){
+		return true;
+	}
+
+	return false;
+}
+
+double Sample3DSceneRenderer::intersectRaySphere(XMVECTOR rO, XMVECTOR rV, XMVECTOR sO, double sR) {
+
+	XMVECTOR Q = XMVectorSubtract(sO, rO);
+	double c = sqrt(XMVectorGetX(Q) * XMVectorGetX(Q) + XMVectorGetY(Q) *XMVectorGetY(Q) + XMVectorGetZ(Q)*XMVectorGetZ(Q));
+	double v = XMVectorGetX(Q) * XMVectorGetX(rV) + XMVectorGetY(Q) *XMVectorGetY(rV) + XMVectorGetZ(Q)*XMVectorGetZ(rV);//XMVector3Dot(Q, rV);
+	double d = sR*sR - (c*c - v*v);
+
+	// If there was no intersection, return -1
+	if (d < 0.0) return (-1.0f);
+
+	// Return the distance to the [first] intersecting point
+	return (v - sqrt(d));
+}
+
 
 // Rotate the 3D cube model a set amount of radians.
 void Sample3DSceneRenderer::Rotate(float radians)
@@ -361,9 +422,11 @@ void Sample3DSceneRenderer::Render()
 	
 	for (int i = 0; i < numast; i++)
 	{ // draw every asteroid
-		thexform = XMMatrixRotationQuaternion(debris[i].ori);
-		thexform = XMMatrixMultiply(thexform,XMMatrixTranslationFromVector(debris[i].pos));
-		DrawOne(context, &thexform);	
+		if (debris[i].boolDraw == true){
+			thexform = XMMatrixRotationQuaternion(debris[i].ori);
+			thexform = XMMatrixMultiply(thexform, XMMatrixTranslationFromVector(debris[i].pos));
+			DrawOne(context, &thexform);
+		}
 	}
 
 	//camera transform, here i consider camera as root
@@ -381,11 +444,13 @@ void Sample3DSceneRenderer::Render()
 		if (laser.type == 0){// This does the weaker laser shot
 			//hierarchical xform from camera
 			thexform = XMMatrixMultiply(laserXform, cameraXform);
+			//thexform = XMMatrixMultiply(thexform, XMMatrixRotationNormal());//Apply rotation for camera
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			DrawOne(context, &thexform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
 			laser.draw = 1;
+			laser.power = 1;
 		}
 		else if (laser.type == 1)//TODO possibly sphere shot?
 		{
@@ -393,6 +458,7 @@ void Sample3DSceneRenderer::Render()
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			laser.draw = 1;
+			laser.power = 3;
 		}
 		else //This does the Stronger single shot
 		{
@@ -401,10 +467,12 @@ void Sample3DSceneRenderer::Render()
 				thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 				laser.count++;
 				laser.draw = 1;
+				laser.power = 2;
 			}
 			else if (laser.count > 30)
 			{
 				laser.count = 0;
+				laser.power = 0;
 			}
 			else{
 				laser.count++;
@@ -414,6 +482,9 @@ void Sample3DSceneRenderer::Render()
 			DrawOne(context, &thexform);
 		}
 		laser.isFiring = false;
+	}
+	else{
+		laser.count = 0;
 	}
 
 	//target box's local xform
