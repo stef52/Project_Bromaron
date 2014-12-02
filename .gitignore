@@ -4,12 +4,10 @@
 # User-specific files
 *.suo
 *.user
+*.userosscache
 *.sln.docstates
 
 # Build results
-Project_Bromaron/Project_Bromaron_v1.0.2/fiering/transforms1/Debug/
-*/Debug/
-*/*/Debug/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -161,6 +159,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
+bower_components/
 
 # RIA/Silverlight projects
 Generated_Code/
