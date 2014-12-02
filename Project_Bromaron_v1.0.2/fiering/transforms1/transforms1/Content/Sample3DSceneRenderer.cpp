@@ -442,10 +442,13 @@ void Sample3DSceneRenderer::Render()
 	if (laser.isFiring){
 		if (laser.type == 0){// This does the weaker laser shot
 			//hierarchical xform from camera
-			thexform = XMMatrixMultiply(laserXform, cameraXform);
+			thexform = XMMatrixIdentity();
+			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0,0,500));
+			thexform *= XMMatrixMultiply(laserXform, cameraXform);
 			//thexform = XMMatrixMultiply(thexform, XMMatrixRotationNormal());//Apply rotation for camera
-			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
+			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
+			
 			DrawOne(context, &thexform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
 			laser.draw = 1;
