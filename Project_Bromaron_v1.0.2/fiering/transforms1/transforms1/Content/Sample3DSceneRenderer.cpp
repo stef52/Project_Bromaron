@@ -610,6 +610,46 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
         };
 
+		VertexPositionColor *particledata;
+		VertexPositionColor thisone;
+		XMFLOAT3 thisnor;
+		numParticles = 7500;
+
+		particledata = (VertexPositionColor *)malloc(numParticles*sizeof(VertexPositionColor));
+
+		float u, v, w, theta, phi, spray;
+		float trad = 0.4;
+		float maxspray = 0.5;
+
+		std::random_device rd;
+		std::mt19937 lotto(rd());
+		std::uniform_real_distribution<> distro(0, 1);
+
+		for (int i = 0; i < numParticles; i++)
+		{
+			u = static_cast<float>(distro(lotto));
+			v = static_cast<float>(distro(lotto));
+			w = static_cast<float>(distro(lotto));
+
+			theta = u * 2 * 3.1416;
+
+			phi = acos(2 * v - 1.0);
+			//			phi = v * 2 * 3.1416;
+			spray = maxspray*cbrt(w);// *cbrt(cbrt(cbrt(w))); // cbrt(w);
+			thisnor = // normal direction
+				XMFLOAT3(spray*cos(theta)*sin(phi), spray*sin(theta)*sin(phi), spray*cos(phi));
+
+			thisone = // position + color of this vertex, now added normal and texcoord
+			{
+				XMFLOAT3(thisnor.x*trad, thisnor.y*trad, thisnor.z*trad),
+				XMFLOAT3(i / (float)numParticles, 1, 0.05),
+				XMFLOAT3(thisnor.x, thisnor.y, thisnor.z),
+				XMFLOAT2(0, 0)
+			};
+
+			particledata[i] = thisone; // add to vertex
+		}
+
         D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
         vertexBufferData.pSysMem = cubeVertices;
         vertexBufferData.SysMemPitch = 0;
@@ -622,6 +662,19 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
                 &m_vertexBuffer
                 )
             );
+
+		D3D11_SUBRESOURCE_DATA vertexBufferData2 = { 0 };
+		vertexBufferData2.pSysMem = particledata;
+		vertexBufferData2.SysMemPitch = 0;
+		vertexBufferData2.SysMemSlicePitch = 0;
+		CD3D11_BUFFER_DESC vertexBufferDesc2(numParticles*sizeof(VertexPositionColor), D3D11_BIND_VERTEX_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+			&vertexBufferDesc2,
+			&vertexBufferData2,
+			&m_particleVB
+			)
+			);
 
         // Load mesh indices. Each trio of indices represents
         // a triangle to be rendered on the screen.
