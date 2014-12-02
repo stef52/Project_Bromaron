@@ -116,5 +116,8 @@
     <Image Include="Assets\2365.dds">
       <Filter>Assets</Filter>
     </Image>
+    <Image Include="Assets\face.dds">
+      <Filter>Assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

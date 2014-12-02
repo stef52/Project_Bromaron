@@ -11,6 +11,8 @@
 #include "ShaderStructures.h"
 #include "..\Helpers\StepTimer.h"
 
+#include "..\..\..\DirectXTK\Inc\DDSTextureLoader.h"
+
 using namespace DirectX;
 
 namespace DirectXGame2
