@@ -36,6 +36,7 @@ namespace DirectXGame2
 		void LaserSpin(float laserPitch, float laserYaw);
 		void LaserFire(bool isFiring);
 		void LaserFireType(int type);
+		bool collisionDetection(XMVECTOR objectOne, XMVECTOR objectTwo);
     private:
         void Rotate(float radians);
 		void DrawOne(ID3D11DeviceContext2 *context, XMMATRIX *thexform);
@@ -80,10 +81,13 @@ namespace DirectXGame2
 			XMVECTOR ori; // orientation
 			XMVECTOR L; // angular momentum (use as velocity)
 			XMVECTOR vel; // linear velocity
+			bool boolDraw = true;
+			int hitCounter = 0;
 		};
 
 		int numast;
 		Asteroid debris[1500];
+		bool isDestroyedAsstroid(int hitcount);
 
 		typedef struct Laser
 		{
@@ -92,6 +96,7 @@ namespace DirectXGame2
 			int type;
 			int draw = 0;
 			int count = 0;
+			int power;
 		};
 
 		Laser laser;

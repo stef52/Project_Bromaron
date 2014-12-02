@@ -169,8 +169,46 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 
         Rotate(radians);
     }
+
+	for (int i = 0; i < numast; i++)
+	{ // draw every asteroid
+		if (debris[i].boolDraw==false){
+			continue;
+		}
+			if (collisionDetection(cam.pos, debris[i].pos)){
+				debris[i].hitCounter = 3;//TODO testing only
+			}
+			if (collisionDetection(debris[i].pos, laser.ori)){
+				debris[i].hitCounter = 3;//TODO testing only
+			}
+
+			if (isDestroyedAsstroid(debris[i].hitCounter)){
+				debris[i].boolDraw = false;
+			}
+		
+	}
+
 	UpdateWorld();
 	UpdatePlayer();
+}
+
+bool Sample3DSceneRenderer::isDestroyedAsstroid(int hitcount){
+	if (hitcount > 2){
+		return true;
+	}
+	return false;
+}
+
+bool Sample3DSceneRenderer::collisionDetection(XMVECTOR objectOne, XMVECTOR objectTwo){
+
+	XMVECTOR diff = XMVectorSubtract(objectOne, objectTwo);
+	XMVECTOR length = XMVectorSqrt(XMVector3Dot(diff, diff));
+
+	if (XMVectorGetX(length) < 0.6f){
+		return true;
+	}
+
+	return false;
 }
 
 // Rotate the 3D cube model a set amount of radians.
@@ -358,9 +396,11 @@ void Sample3DSceneRenderer::Render()
 	
 	for (int i = 0; i < numast; i++)
 	{ // draw every asteroid
-		thexform = XMMatrixRotationQuaternion(debris[i].ori);
-		thexform = XMMatrixMultiply(thexform,XMMatrixTranslationFromVector(debris[i].pos));
-		DrawOne(context, &thexform);	
+		if (debris[i].boolDraw == true){
+			thexform = XMMatrixRotationQuaternion(debris[i].ori);
+			thexform = XMMatrixMultiply(thexform, XMMatrixTranslationFromVector(debris[i].pos));
+			DrawOne(context, &thexform);
+		}
 	}
 
 	//camera transform, here i consider camera as root
@@ -378,11 +418,13 @@ void Sample3DSceneRenderer::Render()
 		if (laser.type == 0){// This does the weaker laser shot
 			//hierarchical xform from camera
 			thexform = XMMatrixMultiply(laserXform, cameraXform);
+			//thexform = XMMatrixMultiply(thexform, XMMatrixRotationNormal());//Apply rotation for camera
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			DrawOne(context, &thexform);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(-1.0f, 0.0f, 0.0f));
 			laser.draw = 1;
+			laser.power = 1;
 		}
 		else if (laser.type == 1)//TODO possibly sphere shot?
 		{
@@ -390,6 +432,7 @@ void Sample3DSceneRenderer::Render()
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslation(0.5f, 0.0f, 0.0f));
 			thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 			laser.draw = 1;
+			laser.power = 3;
 		}
 		else //This does the Stronger single shot
 		{
@@ -398,10 +441,12 @@ void Sample3DSceneRenderer::Render()
 				thexform = XMMatrixMultiply(XMMatrixScaling(0.1, 0.1, 1000), thexform);
 				laser.count++;
 				laser.draw = 1;
+				laser.power = 2;
 			}
 			else if (laser.count > 30)
 			{
 				laser.count = 0;
+				laser.power = 0;
 			}
 			else{
 				laser.count++;
@@ -411,6 +456,9 @@ void Sample3DSceneRenderer::Render()
 			DrawOne(context, &thexform);
 		}
 		laser.isFiring = false;
+	}
+	else{
+		laser.count = 0;
 	}
 
 	//target box's local xform
