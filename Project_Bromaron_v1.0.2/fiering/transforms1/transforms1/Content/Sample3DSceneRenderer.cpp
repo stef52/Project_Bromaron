@@ -57,9 +57,9 @@ void Sample3DSceneRenderer::CameraSpin(float roll, float pitch, float yaw)
 	cam.left = XMVector3Cross(cam.forward, cam.up);
 	// apply camera-relative orientation changes
 
-	XMVECTOR rollq = XMQuaternionRotationAxis(cam.forward, roll*0.001);
-	XMVECTOR pitchq = XMQuaternionRotationAxis(cam.left, pitch*0.001);
-	XMVECTOR yawq = XMQuaternionRotationAxis(cam.up, yaw*0.001);
+	XMVECTOR rollq = XMQuaternionRotationAxis(cam.forward, roll*0.01);
+	XMVECTOR pitchq = XMQuaternionRotationAxis(cam.left, pitch*0.01);
+	XMVECTOR yawq = XMQuaternionRotationAxis(cam.up, yaw*0.01);
 	//Roll:
 	cam.ori = XMQuaternionMultiply(cam.ori,rollq);
 	//Pitch:
