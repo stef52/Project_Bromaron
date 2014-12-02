@@ -95,11 +95,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    
     <PackageCertificateKeyFile>DirectXGame2_TemporaryKey.pfx</PackageCertificateKeyFile>
-    
   </PropertyGroup>
-  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
     <Link>
       <AdditionalDependencies>d2d1.lib; d3d11.lib; dxgi.lib; ole32.lib; windowscodecs.lib; dwrite.lib; xaudio2.lib;mfcore.lib;mfplat.lib;mfreadwrite.lib;xinput.lib;mfuuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -184,18 +181,17 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-
   <ItemGroup>
+    <Image Include="Assets\2365.dds" />
     <Image Include="Assets\Logo.png" />
     <Image Include="Assets\SmallLogo.png" />
     <Image Include="Assets\StoreLogo.png" />
     <Image Include="Assets\SplashScreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Helpers\InputManager.h"/>
-    <ClInclude Include="Helpers\OverlayManager.h"/>
-    <ClInclude Include="Helpers\SoundPlayer.h"/>
-
+    <ClInclude Include="Helpers\InputManager.h" />
+    <ClInclude Include="Helpers\OverlayManager.h" />
+    <ClInclude Include="Helpers\SoundPlayer.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="Helpers\DeviceResources.h" />
     <ClInclude Include="DirectXGame2Main.h" />
@@ -208,10 +204,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Helpers\InputManager.cpp"/>
-    <ClCompile Include="Helpers\OverlayManager.cpp"/>
+    <ClCompile Include="Helpers\InputManager.cpp" />
+    <ClCompile Include="Helpers\OverlayManager.cpp" />
     <ClCompile Include="Helpers\SoundPlayer.cpp" />
-
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Helpers\DeviceResources.cpp" />
     <ClCompile Include="DirectXGame2Main.cpp" />
@@ -231,9 +226,7 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    
     <None Include="DirectXGame2_TemporaryKey.pfx" />
-    
   </ItemGroup>
   <ItemGroup>
     <Media Include="Assets\becky.wma" />
@@ -248,6 +241,9 @@
       <ShaderType>Vertex</ShaderType>
       <ShaderModel>4.0_level_9_1</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MeshContentTask Include="Scene.fbx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

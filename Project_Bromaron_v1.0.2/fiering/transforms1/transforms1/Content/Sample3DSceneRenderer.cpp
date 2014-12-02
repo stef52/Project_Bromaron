@@ -6,6 +6,7 @@
 //// Copyright (c) Microsoft Corporation. All rights reserved
 
 #include "pch.h"
+#include <random>
 #include "Sample3DSceneRenderer.h"
 
 #include "..\Helpers\DirectXHelper.h"
@@ -169,6 +170,8 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 
         Rotate(radians);
     }
+
+	m_timer = timer.GetFramesPerSecond() / 60.;
 	UpdateWorld();
 	UpdatePlayer();
 }
@@ -424,6 +427,36 @@ void Sample3DSceneRenderer::Render()
 	thexform = XMMatrixMultiply(XMMatrixScaling(2, 2, 2), targetXform);
 	//DrawOne(context, &thexform);
 
+	//spline pathing
+	float circtime, t, p1w, p2w, p3w, p4w;
+
+	circtime = fmodf((m_timer / 100), 16);
+	t = circtime - floor(circtime);	
+
+	p1w = (1 - t)*(1 - t)*(1 - t);
+	p2w = 3 * t*(1 - t)*(1 - t);
+	p3w = 3 * t*t*(1 - t);
+	p4w = t*t*t;
+
+	int wsec = ((int)floor(circtime)) * 4; //picks which set of control points are used 
+
+	XMFLOAT4* P;
+	P = createSpline();
+
+	XMFLOAT4 Bt;
+	Bt.x = p1w*P[0 + wsec].x + p2w*P[1 + wsec].x + p3w*P[2 + wsec].x + p4w*P[3 + wsec].x;
+	Bt.y = p1w*P[0 + wsec].y + p2w*P[1 + wsec].y + p3w*P[2 + wsec].y + p4w*P[3 + wsec].y;
+	Bt.z = p1w*P[0 + wsec].z + p2w*P[1 + wsec].z + p3w*P[2 + wsec].z + p4w*P[3 + wsec].z;
+	Bt.w = 0;
+
+	XMMATRIX temp;
+	temp = XMMatrixIdentity();
+	temp = XMMatrixTranslation(Bt.x, Bt.y, Bt.z);
+	DrawOne(context, &temp);
+
+	//Skybox
+
+
 	m_contextReady = true;
 
 }
@@ -449,6 +482,8 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
         {
             { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
             { "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D11_INPUT_PER_VERTEX_DATA, 0 }
         };
 
         DX::ThrowIfFailed(
@@ -554,10 +589,48 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
             );
     });
 
+
+
     // Once the cube is loaded, the object is ready to be rendered.
     createCubeTask.then([this] () {
         m_loadingComplete = true;
     });
+}
+
+XMFLOAT4* Sample3DSceneRenderer::createSpline()
+{
+	//Spline Control point set up
+	DirectX::XMFLOAT4 m_splineArray[64];
+	float u, v, w;
+
+	std::random_device rd;
+	std::mt19937 lotto(rd());
+	std::uniform_real_distribution<> distro(0, 1);
+
+	//Randomize X, Y, Z
+	u = static_cast<float>(distro(lotto)) * 200 - 100;
+	v = static_cast<float>(distro(lotto)) * 200 - 100;
+	w = static_cast<float>(distro(lotto)) * 200 - 100;
+
+	m_splineArray[0] = XMFLOAT4(0, 0, 0, 0);
+	m_splineArray[1] = XMFLOAT4(u, v, w, 0);
+	m_splineArray[63] = m_splineArray[0];
+
+	for (int i = 2; i < 63; i++)
+	{
+		u = static_cast<float>(distro(lotto)) * 200 - 100;
+		v = static_cast<float>(distro(lotto)) * 200 - 100;
+		w = static_cast<float>(distro(lotto)) * 200 - 100;
+
+		if (i % 4 == 0)		m_splineArray[i] = m_splineArray[i - 1];
+		if (i % 4 == 1)		m_splineArray[i] = XMFLOAT4(2 * m_splineArray[i - 1].x - m_splineArray[i - 3].x,
+														2 * m_splineArray[i - 1].y - m_splineArray[i - 3].y,
+														2 * m_splineArray[i - 1].z - m_splineArray[i - 3].z, 0);
+		if (i % 4 == 2)		m_splineArray[i] = XMFLOAT4(u, v, w, 0);
+		if (i % 4 == 3)		m_splineArray[i] = XMFLOAT4(u, v, w, 0);
+	}
+
+	return m_splineArray;
 }
 
 void Sample3DSceneRenderer::ReleaseDeviceDependentResources()

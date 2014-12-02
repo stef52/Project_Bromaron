@@ -8,8 +8,11 @@
 // Per-pixel color data passed through the pixel shader.
 struct PixelShaderInput
 {
-    float4 pos : SV_POSITION;
-    float3 color : COLOR0;
+	float4 pos : SV_POSITION;
+	float3 color : COLOR0;
+	float3 normal : NORMAL0;
+	float4 surfpos : POSITION0;
+	float2 texcoord : TEXCOORD0;
 };
 
 // A pass-through function for the (interpolated) color data.

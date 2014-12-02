@@ -36,6 +36,9 @@ namespace DirectXGame2
 		void LaserSpin(float laserPitch, float laserYaw);
 		void LaserFire(bool isFiring);
 		void LaserFireType(int type);
+		XMFLOAT4* createSpline();
+
+		float	m_timer;
     private:
         void Rotate(float radians);
 		void DrawOne(ID3D11DeviceContext2 *context, XMMATRIX *thexform);
@@ -62,6 +65,8 @@ namespace DirectXGame2
 		bool	m_contextReady;
         float   m_degreesPerSecond;
         bool    m_tracking;
+
+
 
 		// Variables for player
 		typedef struct Camera
