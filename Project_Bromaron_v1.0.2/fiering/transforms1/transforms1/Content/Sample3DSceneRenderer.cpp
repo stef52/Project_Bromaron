@@ -57,9 +57,9 @@ void Sample3DSceneRenderer::CameraSpin(float roll, float pitch, float yaw)
 	cam.left = XMVector3Cross(cam.forward, cam.up);
 	// apply camera-relative orientation changes
 
-	XMVECTOR rollq = XMQuaternionRotationAxis(cam.forward, roll*0.01);
-	XMVECTOR pitchq = XMQuaternionRotationAxis(cam.left, pitch*0.01);
-	XMVECTOR yawq = XMQuaternionRotationAxis(cam.up, yaw*0.01);
+	XMVECTOR rollq = XMQuaternionRotationAxis(cam.forward, roll*0.05);
+	XMVECTOR pitchq = XMQuaternionRotationAxis(cam.left, pitch*0.05);
+	XMVECTOR yawq = XMQuaternionRotationAxis(cam.up, yaw*0.05);
 	//Roll:
 	cam.ori = XMQuaternionMultiply(cam.ori,rollq);
 	//Pitch:
@@ -150,7 +150,7 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 
 void Sample3DSceneRenderer::CreateAsteroidField()
 {
-	numast = 30;
+	numast = 1000;
 	XMVECTOR angles;
 //	debris = malloc(numast*sizeof(Asteroid));
 	for (int i = 0; i < numast; i++)
@@ -214,7 +214,7 @@ bool Sample3DSceneRenderer::collisionDetection(XMVECTOR objectOne, XMVECTOR obje
 	XMVECTOR diff = XMVectorSubtract(objectOne, objectTwo);
 	XMVECTOR length = XMVectorSqrt(XMVector3Dot(diff, diff));
 
-	if (XMVectorGetX(length) < 0.6f){
+	if (XMVectorGetX(length) < 2.5f){
 		return true;
 	}
 
@@ -424,6 +424,9 @@ void Sample3DSceneRenderer::Render()
 		if (debris[i].boolDraw == true){
 			thexform = XMMatrixRotationQuaternion(debris[i].ori);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslationFromVector(debris[i].pos));
+			XMVECTOR move = {- rand() % 100 /95, - rand() % 100/95, - rand() % 100/95 };
+			//DEMO XMVECTOR move = {- rand() % 100 /10, - rand() % 100/10, - rand() % 100/10 };
+			debris[i].pos += move;
 			DrawOne(context, &thexform);
 		}
 	}
@@ -604,6 +607,32 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			{ XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT2(0.0f, 1.0f) },
         };
 
+		// Load mesh indices. Each trio of indices represents
+		// a triangle to be rendered on the screen.
+		// For example: 0,2,1 means that the vertices with indexes
+		// 0, 2 and 1 from the vertex buffer compose the 
+		// first triangle of this mesh.
+		static const unsigned short cubeIndices[] =
+		{
+			0, 2, 1, // -x
+			1, 2, 3,
+
+			4, 5, 6, // +x
+			5, 7, 6,
+
+			0, 1, 5, // -y
+			0, 5, 4,
+
+			2, 6, 7, // +y
+			2, 7, 3,
+
+			0, 4, 6, // -z
+			0, 6, 2,
+
+			1, 3, 7, // +z
+			1, 7, 5,
+		};
+
 		VertexPositionColor *particledata;
 		VertexPositionColor thisone;
 		XMFLOAT3 thisnor;
@@ -644,18 +673,73 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			particledata[i] = thisone; // add to vertex
 		}
 
-        D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
-        vertexBufferData.pSysMem = cubeVertices;
-        vertexBufferData.SysMemPitch = 0;
-        vertexBufferData.SysMemSlicePitch = 0;
-        CD3D11_BUFFER_DESC vertexBufferDesc(sizeof(cubeVertices), D3D11_BIND_VERTEX_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(
-                &vertexBufferDesc,
-                &vertexBufferData,
-                &m_vertexBuffer
-                )
-            );
+		int circle = 30;
+		float crad = 2.0f;
+		int loop;
+		int segment = 30;
+		loop = 3 * segment;
+		int numvertices = circle*loop;
+		int numindices = circle*loop * 6;
+		VertexPositionColor *vertices;
+
+		vertices = (VertexPositionColor *)malloc(numvertices*sizeof(VertexPositionColor));
+
+
+		// a circle now
+		for (int i = 0; i < loop; i++)
+		{
+			theta = 2 * i*3.1416 / loop; // large loop
+
+			for (int j = 0; j < circle; j++) // small circle
+			{
+				phi = 2 * j*3.1416 / circle; // from 0 to 2PI
+
+				thisnor = // normal direction
+					XMFLOAT3(cos(theta)*sin(phi), cos(phi), sin(theta)*sin(phi));
+				thisone = // position + color of this vertex, now added normal and texcoord
+				{
+					XMFLOAT3(thisnor.x*crad, thisnor.y*crad, thisnor.z*crad),
+					XMFLOAT3(i / (segment), j / (circle), 0.05),
+					XMFLOAT3(thisnor.x, thisnor.y, thisnor.z),
+					XMFLOAT2((float)i / loop, (float)j / circle)
+				};
+				vertices[i*circle + j] = thisone; // add to vertex array
+			}
+		}
+
+		WORD *indices;
+		indices = (WORD *)malloc(sizeof(WORD)*numindices);
+		int count = 0;
+		for (int i = 0; i < loop; i++)
+		{
+			for (int j = 0; j < circle; j++)
+			{
+				// two triangles per quad
+
+				// proper order:
+
+				indices[count++] = WORD(((i + 1) % loop)*circle + j);
+				indices[count++] = WORD(i*circle + ((j + 1) % circle));
+				indices[count++] = WORD((i*circle + j));
+
+				indices[count++] = WORD(((i + 1) % loop)*circle + j);
+				indices[count++] = WORD(((i + 1) % loop)*circle + ((j + 1) % circle));
+				indices[count++] = WORD(i*circle + ((j + 1) % circle));
+			}
+		}
+
+		D3D11_SUBRESOURCE_DATA vertexBufferData = { 0 };
+		vertexBufferData.pSysMem = vertices;
+		vertexBufferData.SysMemPitch = 0;
+		vertexBufferData.SysMemSlicePitch = 0;
+		CD3D11_BUFFER_DESC vertexBufferDesc(numvertices*sizeof(VertexPositionColor), D3D11_BIND_VERTEX_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+			&vertexBufferDesc,
+			&vertexBufferData,
+			&m_vertexBuffer
+			)
+			);
 
 		D3D11_SUBRESOURCE_DATA vertexBufferData2 = { 0 };
 		vertexBufferData2.pSysMem = particledata;
@@ -670,46 +754,20 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 			)
 			);
 
-        // Load mesh indices. Each trio of indices represents
-        // a triangle to be rendered on the screen.
-        // For example: 0,2,1 means that the vertices with indexes
-        // 0, 2 and 1 from the vertex buffer compose the 
-        // first triangle of this mesh.
-        static const unsigned short cubeIndices [] =
-        {
-            0,2,1, // -x
-            1,2,3,
+		m_indexCount = numindices; // ARRAYSIZE(cubeIndices);
 
-            4,5,6, // +x
-            5,7,6,
-
-            0,1,5, // -y
-            0,5,4,
-
-            2,6,7, // +y
-            2,7,3,
-
-            0,4,6, // -z
-            0,6,2,
-
-            1,3,7, // +z
-            1,7,5,
-        };
-
-        m_indexCount = ARRAYSIZE(cubeIndices);
-
-        D3D11_SUBRESOURCE_DATA indexBufferData = {0};
-        indexBufferData.pSysMem = cubeIndices;
-        indexBufferData.SysMemPitch = 0;
-        indexBufferData.SysMemSlicePitch = 0;
-        CD3D11_BUFFER_DESC indexBufferDesc(sizeof(cubeIndices), D3D11_BIND_INDEX_BUFFER);
-        DX::ThrowIfFailed(
-            m_deviceResources->GetD3DDevice()->CreateBuffer(
-                &indexBufferDesc,
-                &indexBufferData,
-                &m_indexBuffer
-                )
-            );
+		D3D11_SUBRESOURCE_DATA indexBufferData = { 0 };
+		indexBufferData.pSysMem = indices;
+		indexBufferData.SysMemPitch = 0;
+		indexBufferData.SysMemSlicePitch = 0;
+		CD3D11_BUFFER_DESC indexBufferDesc(numindices*sizeof(WORD), D3D11_BIND_INDEX_BUFFER);
+		DX::ThrowIfFailed(
+			m_deviceResources->GetD3DDevice()->CreateBuffer(
+			&indexBufferDesc,
+			&indexBufferData,
+			&m_indexBuffer
+			)
+			);
     });
 
 	auto context = m_deviceResources->GetD3DDeviceContext();
@@ -718,7 +776,7 @@ void Sample3DSceneRenderer::CreateDeviceDependentResources()
 	ID3D11ShaderResourceView *textureView;
 
 	CreateDDSTextureFromFile(m_deviceResources->GetD3DDevice(), context,
-		L"Assets/face.dds",
+		L"Assets/2365.dds",
 		&pp,
 		&textureView,
 		0);
