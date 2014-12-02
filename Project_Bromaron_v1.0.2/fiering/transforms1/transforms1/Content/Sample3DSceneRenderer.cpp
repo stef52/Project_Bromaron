@@ -175,10 +175,11 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 		if (debris[i].boolDraw==false){
 			continue;
 		}
-			if (collisionDetection(cam.pos, debris[i].pos)){
+		if (collisionDetection(cam.pos, debris[i].pos)){
 				debris[i].hitCounter = 3;//TODO testing only
 			}
-			if (collisionDetection(debris[i].pos, laser.ori)){
+			if (collisionDetectionRay(debris[i].pos, laser.ori)){
+		//if (intersectRaySphere(cam.pos, laser.ori, debris[i].pos, 100.0)>0){
 				debris[i].hitCounter = 3;//TODO testing only
 			}
 
@@ -190,6 +191,12 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 
 	UpdateWorld();
 	UpdatePlayer();
+}
+
+bool Sample3DSceneRenderer::collisionDetectionRay(XMVECTOR sphere, XMVECTOR ray){
+	XMVECTOR diff = XMVectorSubtract(sphere, ray);
+
+	return false;
 }
 
 bool Sample3DSceneRenderer::isDestroyedAsstroid(int hitcount){
@@ -210,6 +217,21 @@ bool Sample3DSceneRenderer::collisionDetection(XMVECTOR objectOne, XMVECTOR obje
 
 	return false;
 }
+
+double Sample3DSceneRenderer::intersectRaySphere(XMVECTOR rO, XMVECTOR rV, XMVECTOR sO, double sR) {
+
+	XMVECTOR Q = XMVectorSubtract(sO, rO);
+	double c = sqrt(XMVectorGetX(Q) * XMVectorGetX(Q) + XMVectorGetY(Q) *XMVectorGetY(Q) + XMVectorGetZ(Q)*XMVectorGetZ(Q));
+	double v = XMVectorGetX(Q) * XMVectorGetX(rV) + XMVectorGetY(Q) *XMVectorGetY(rV) + XMVectorGetZ(Q)*XMVectorGetZ(rV);//XMVector3Dot(Q, rV);
+	double d = sR*sR - (c*c - v*v);
+
+	// If there was no intersection, return -1
+	if (d < 0.0) return (-1.0f);
+
+	// Return the distance to the [first] intersecting point
+	return (v - sqrt(d));
+}
+
 
 // Rotate the 3D cube model a set amount of radians.
 void Sample3DSceneRenderer::Rotate(float radians)

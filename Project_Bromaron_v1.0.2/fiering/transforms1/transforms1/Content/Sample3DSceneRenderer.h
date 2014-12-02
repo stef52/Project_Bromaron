@@ -42,6 +42,8 @@ namespace DirectXGame2
 		void DrawOne(ID3D11DeviceContext2 *context, XMMATRIX *thexform);
 		void CreateAsteroidField();
 		void CreateCamera();
+		double intersectRaySphere(XMVECTOR rO, XMVECTOR rV, XMVECTOR sO, double sR);
+		bool collisionDetectionRay(XMVECTOR sphere, XMVECTOR ray);
     private:
         // Cached pointer to device resources.
         std::shared_ptr<DX::DeviceResources> m_deviceResources;
