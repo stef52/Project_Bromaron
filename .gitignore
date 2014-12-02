@@ -7,9 +7,10 @@
 *.sln.docstates
 
 # Build results
+Project_Bromaron\Project_Bromaron_v1.0.2\fiering\transforms1\Debug/*
 */Debug/
 */*/Debug/
-Debug/
+Debug\
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
