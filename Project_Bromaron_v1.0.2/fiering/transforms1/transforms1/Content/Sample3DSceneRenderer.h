@@ -44,8 +44,7 @@ namespace DirectXGame2
 		void DrawOne(ID3D11DeviceContext2 *context, XMMATRIX *thexform);
 		void CreateAsteroidField();
 		void CreateCamera();
-		double intersectRaySphere(XMVECTOR rO, XMVECTOR rV, XMVECTOR sO, double sR);
-		bool collisionDetectionRay(XMVECTOR sphere, XMVECTOR ray);
+		bool intersectRaySphere(XMVECTOR rO, XMVECTOR rV, XMVECTOR sO, double sR);
     private:
         // Cached pointer to device resources.
         std::shared_ptr<DX::DeviceResources> m_deviceResources;
@@ -92,7 +91,7 @@ namespace DirectXGame2
 		};
 
 		int numast;
-		Asteroid debris[1500];
+		Asteroid debris[1000];
 		bool isDestroyedAsstroid(int hitcount);
 
 		typedef struct Laser
