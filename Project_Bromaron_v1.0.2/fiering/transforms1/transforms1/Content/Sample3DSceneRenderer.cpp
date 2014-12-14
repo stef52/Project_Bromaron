@@ -424,8 +424,8 @@ void Sample3DSceneRenderer::Render()
 		if (debris[i].boolDraw == true){
 			thexform = XMMatrixRotationQuaternion(debris[i].ori);
 			thexform = XMMatrixMultiply(thexform, XMMatrixTranslationFromVector(debris[i].pos));
-			//XMVECTOR move = {- rand() % 100 /100, - rand() % 100/100, - rand() % 100/100 };
-			 XMVECTOR move = {- rand() % 100 /10, - rand() % 100/10, - rand() % 100/10 };
+			XMVECTOR move = {- rand() % 100 /100, - rand() % 100/100, - rand() % 100/100 };
+			// XMVECTOR move = {- rand() % 100 /10, - rand() % 100/10, - rand() % 100/10 };
 			debris[i].pos += move;
 			DrawOne(context, &thexform);
 		}
